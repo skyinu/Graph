@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Graph</string>
+    <string name="del_node">delete</string>
+    <string name="dfs_graph">dfs</string>
+    <string name="bfs_graph">bfs</string>
+    <string name="create_graph">create</string>
+    <string name="begin_node">开始点</string>
+    <string name="end_node">结束点</string>
+    <string name="back">取消</string>
+    <string name="confirm">确定</string>
+    <string name="persis">添加下一个</string>
+</resources>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".MainActivity">
+
+    <FrameLayout
+        android:layout_marginTop="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#ff0"
+        android:elevation="12dp">
+        <com.graph.chen.graph.view.GraphSurfaceView
+            android:id="@+id/surface_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </FrameLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginTop="5dp"
+        android:gravity="center">
+        <View
+            android:layout_centerInParent="true"
+            android:id="@+id/id_center"
+            android:layout_width="1dp"
+            android:layout_height="1dp"/>
+        <Button
+            android:id="@+id/create_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/create_graph"
+            android:textSize="12sp"
+            android:layout_alignTop="@+id/id_center"
+            android:layout_alignRight="@+id/id_center" />
+        <Button
+            android:id="@+id/del_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/del_node"
+            android:textSize="12sp"
+            android:layout_below="@+id/create_btn"
+            android:layout_alignRight="@id/id_center" />
+        <Button
+            android:id="@+id/dfs_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/id_center"
+            android:layout_alignTop="@id/id_center"
+            android:text="@string/dfs_graph"
+            android:textSize="12sp" />
+
+        <Button
+            android:id="@+id/bfs_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/dfs_btn"
+            android:layout_alignLeft="@id/id_center"
+            android:padding="0dp"
+            android:text="@string/bfs_graph"
+            android:textSize="12sp" />
+
+
+    </RelativeLayout>
+</LinearLayout>

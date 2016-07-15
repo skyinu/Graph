@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="GraphSurfaceView">
+        <attr name="visited_node_color" format="color"></attr>
+        <attr name="visited_edge_color" format="color"></attr>
+        <attr name="normal_node_color" format="color"></attr>
+        <attr name="normal_edge_color" format="color"></attr>
+        <attr name="deleted_node_color" format="color"></attr>
+    </declare-styleable>
+</resources>
