@@ -48,15 +48,16 @@ public class ActionListenerImpl implements ActionListener {
                 if (str.equals("") || number<=0
                         ||Integer.valueOf(str) > number || Integer.valueOf(str) < 0) {
                     Toast.makeText(context, "范围为0～" + number, Toast.LENGTH_SHORT).show();
-                    editText.setTag(1);
                 }
+                int start=Integer.valueOf(str);
+                surfaceView.BfsGraph(start);
             }
         });
         dialog.show();
     }
 
     @Override
-    public void readForDfsVisit(GraphSurfaceView surfaceView, final Context context, AlertDialog.Builder dialog, final int number) {
+    public void readForDfsVisit(final GraphSurfaceView surfaceView, final Context context, AlertDialog.Builder dialog, final int number) {
         int limit=number==0?number-1:number;
         String title="请输入搜索起点（0～"+limit+"）";
         final EditText editText=configDialog(context,dialog,title);
@@ -64,18 +65,19 @@ public class ActionListenerImpl implements ActionListener {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 String str = editText.getText().toString();
-                if (str.equals("") || number<=0
+                if ("".equals(str) || number<=0
                         ||Integer.valueOf(str) > number || Integer.valueOf(str) < 0) {
                     Toast.makeText(context, "范围为0～" + number, Toast.LENGTH_SHORT).show();
                 }
                 int start=Integer.valueOf(str);
+                surfaceView.DfsGraph(start);
             }
         });
         dialog.show();
     }
 
     @Override
-    public void readForDelete(GraphSurfaceView surfaceView, final Context context, AlertDialog.Builder dialog, final int number) {
+    public void readForDelete(final GraphSurfaceView surfaceView, final Context context, AlertDialog.Builder dialog, final int number) {
         int limit=number==0?number-1:number;
         String title="请输入要删除节点的索引（0～"+limit+"）";
         final EditText editText=configDialog(context,dialog,title);
@@ -83,11 +85,12 @@ public class ActionListenerImpl implements ActionListener {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 String str = editText.getText().toString();
-                if (str.equals("") || number<=0
+                if ("".equals(str)  || number<=0
                         ||Integer.valueOf(str) > number || Integer.valueOf(str) < 0) {
                     Toast.makeText(context, "范围为0～" + number, Toast.LENGTH_SHORT).show();
                 }
                 int start=Integer.valueOf(str);
+                surfaceView.DeleteGraphNode(start);
             }
         });
         dialog.show();

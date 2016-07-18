@@ -9,6 +9,7 @@ public class GNode {
     public float mPosx;
     public float mPosy;
     public int mIndex;
+    public static final int RADIUS=15;
     public static int radius;
     public static final byte NORMAL_STATE=0;
     public static final byte VISITED_STATE=1;
@@ -18,7 +19,6 @@ public class GNode {
         this.mIndex=index;
         mNext=null;
         state=NORMAL_STATE;
-        radius=5;
     }
 
     @Override

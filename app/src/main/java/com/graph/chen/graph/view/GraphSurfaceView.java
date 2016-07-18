@@ -87,6 +87,7 @@ public class GraphSurfaceView extends SurfaceView implements SurfaceHolder.Callb
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
+        Log.e("tag","created");
         mDrawImple.startdrawThread(this);
     }
 
@@ -96,6 +97,7 @@ public class GraphSurfaceView extends SurfaceView implements SurfaceHolder.Callb
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
+        Log.e("tag","destroyed");
         mDrawImple.endDrawThread();
     }
 
@@ -122,7 +124,6 @@ public class GraphSurfaceView extends SurfaceView implements SurfaceHolder.Callb
     public void BfsGraph(int start){
         mDrawImple.setmCommand(DrawImple.COMMAND_BFS);
         mDrawImple.setmStartNode(start);
-        mDrawImple.setShouldDraw(true);
     }
     /**
      * 开始绘制DFS遍历的路径
@@ -131,7 +132,6 @@ public class GraphSurfaceView extends SurfaceView implements SurfaceHolder.Callb
     public void DfsGraph(int start){
         mDrawImple.setmCommand(DrawImple.COMMAND_DFS);
         mDrawImple.setmStartNode(start);
-        mDrawImple.setShouldDraw(true);
     }
 
     /**
@@ -142,6 +142,5 @@ public class GraphSurfaceView extends SurfaceView implements SurfaceHolder.Callb
         mDrawImple.setmCommand(DrawImple.COMMAND_DELETE);
         mDrawImple.setmStartNode(delIndex);
         mDrawImple.setHasChanged(true);
-        mDrawImple.setShouldDraw(true);
     }
 }

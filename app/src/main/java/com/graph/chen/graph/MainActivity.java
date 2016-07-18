@@ -1,14 +1,14 @@
 package com.graph.chen.graph;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 
 import com.graph.chen.graph.action.ActionListener;
 import com.graph.chen.graph.action.ActionListenerImpl;
@@ -28,6 +28,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * 事件处理
      */
     private ActionListenerImpl mActionListener;
+    private DrawStateBroadCast mBroadCast;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,6 +36,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         InitView();
         mActionListener =new ActionListenerImpl();
     }
+
+    /**
+     * 初始化组件
+     */
     private void InitView() {
         createbtn= (Button) findViewById(R.id.create_btn);
         bfs_btn= (Button) findViewById(R.id.bfs_btn);
@@ -45,16 +50,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         dfs_btn.setOnClickListener(this);
         mGraphSurfaceView= (GraphSurfaceView) findViewById(R.id.surface_view);
         del_btn.setOnClickListener(this);
+
+        mBroadCast=new DrawStateBroadCast();
+
+        registerReceiver(mBroadCast,new IntentFilter("com.graph.chen.state"));
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(mBroadCast);
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode==0&&resultCode==RESULT_OK){
-            List<EdgeInfo> datas=data.getParcelableArrayListExtra("pair");
+            final List<EdgeInfo> datas=data.getParcelableArrayListExtra("pair");
             mNodeNumber=data.getIntExtra("nodeNumber",2);
-            mGraphSurfaceView.InitGraph(mNodeNumber,datas);
-            Log.e("tag","number="+mNodeNumber);
-            Log.e("tag","pair="+datas.toString());
+            mGraphSurfaceView.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mGraphSurfaceView.InitGraph(mNodeNumber,datas);
+                }
+            },200);
         }
     }
 
@@ -104,4 +123,28 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void readForDelete(GraphSurfaceView surfaceView,Context context, AlertDialog.Builder dialog, int number) {
         mActionListener.readForDelete(surfaceView,context,dialog,number);
     }
+
+    /**
+     * 设置按钮状态
+     * @param enabled
+     */
+    private void changeAllState(boolean enabled){
+        bfs_btn.setEnabled(enabled);
+        del_btn.setEnabled(enabled);
+        dfs_btn.setEnabled(enabled);
+        createbtn.setEnabled(enabled);
+    }
+
+    /**
+     * 绘图状态广播的接收
+     */
+    public class DrawStateBroadCast extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            boolean flag=intent.getBooleanExtra("flag",true);
+            changeAllState(flag);
+        }
+
+    }
+
 }
