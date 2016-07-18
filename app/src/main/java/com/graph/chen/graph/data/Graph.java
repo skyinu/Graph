@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.SparseArray;
 import android.util.TypedValue;
 
+import java.lang.annotation.Retention;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -58,14 +59,15 @@ public class Graph {
      * @param width
      */
     public void calculateCoordiate(Context context,int width) {
-        int padding= (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,5,context.getResources().getDisplayMetrics());
-        int r=width/2-padding;
+        int padding= (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,8,context.getResources().getDisplayMetrics());
+        int c=width/2;
+        int r=c-padding;
         float degree= (float) (2*Math.PI/mNodeNumber);
         for (int i=0;i<mNodeNumber;i++) {
             float t=degree*i;
             GNode node=mNodes.get(i);
-            node.mPosx= (float) (r+r*Math.cos(t));
-            node.mPosy= (float) (r+r*Math.sin(t));
+            node.mPosx= (float) (c+r*Math.cos(t));
+            node.mPosy= (float) (c+r*Math.sin(t));
         }
     }
 
@@ -84,7 +86,7 @@ public class Graph {
             return visitOrder;
         }
         for(int i=0;i<mNodeNumber;i++){
-            if(!visited[i]){
+            if(!visited[i]&&mNodes.get(i).state!=GNode.DELETED_STATE){
                 visited[i]=true;
                 visitOrder.add(i);
                 dfsVisit(visitOrder,visited,i);
@@ -103,7 +105,7 @@ public class Graph {
         GNode node=mNodes.get(index);
         GEdge edge=node.mNext;
         while(edge!=null){
-            if(!visited[edge.mIndex]){
+            if(!visited[edge.mIndex]&&mNodes.get(edge.mIndex).state!=GNode.DELETED_STATE){
                 visited[edge.mIndex]=true;
                 visitOrder.add(edge.mIndex);
                 dfsVisit(visitOrder,visited,edge.mIndex);
@@ -126,7 +128,7 @@ public class Graph {
             return visitOrder;
         }
         for(int i=0;i<mNodeNumber;i++){
-            if(!visited[i]){
+            if(!visited[i]&&mNodes.get(i).state!=GNode.DELETED_STATE){
                 visited[i]=true;
                 visitOrder.add(i);
                 bfsVisit(visitOrder,visited,i);
@@ -146,7 +148,7 @@ public class Graph {
         while (!back.isEmpty()){
             GNode node=back.poll();
             for(GEdge edge=node.mNext;edge!=null;edge=edge.next){
-                if(!visited[edge.mIndex]) {
+                if(!visited[edge.mIndex]&&mNodes.get(edge.mIndex).state!=GNode.DELETED_STATE) {
                     back.add(mNodes.get(edge.mIndex));
                     visitOrder.add(edge.mIndex);
                     visited[edge.mIndex] = true;
@@ -155,6 +157,22 @@ public class Graph {
         }
     }
 
+    /**
+     * 判断两个节点之间是否存在边
+     * @param sIndex
+     * @param eIndex
+     * @return
+     */
+    public boolean isEdgeBetweenBodes(int sIndex,int eIndex){
+        GNode node=mNodes.get(sIndex);
+        for(GEdge edge=node.mNext;edge!=null;edge=edge.next){
+            GNode n=mNodes.get(edge.mIndex);
+            if(eIndex==n.mIndex&&n.state!=GNode.DELETED_STATE){
+                return true;
+            }
+        }
+        return false;
+    }
     public List<GNode> getmNodes() {
         return mNodes;
     }

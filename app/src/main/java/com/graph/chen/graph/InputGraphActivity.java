@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -17,7 +18,7 @@ import java.util.List;
 /**
  * Created by chen on 2015/7/31.
  */
-public class InputGraphActivity extends Activity {
+public class InputGraphActivity extends AppCompatActivity {
     private EditText etbegin,etend;
     private TextView tvshow;
     private int mNumber =0;
@@ -25,6 +26,9 @@ public class InputGraphActivity extends Activity {
      * amount node
      */
     private int nodenumber;
+    /**
+     * confirm ending
+     */
     private boolean isConfirm=false;
     private List<EdgeInfo> nodePairList=new ArrayList<>();
     private List<String> tvtext=new ArrayList<>();
@@ -35,9 +39,13 @@ public class InputGraphActivity extends Activity {
         tvshow= (TextView) findViewById(R.id.show_text);
         etend= (EditText) findViewById(R.id.end_edit);
         etbegin= (EditText) findViewById(R.id.begin_edit);
-        nodenumber=getIntent().getIntExtra("amountnode",2);
+        nodenumber=getIntent().getIntExtra("nodeNumber",2);
     }
 
+    /**
+     * response click
+     * @param view
+     */
     public void btn_clicked(View view){
         switch (view.getId()){
             case R.id.pre_btn:
@@ -48,7 +56,8 @@ public class InputGraphActivity extends Activity {
                 addEdges();
                 Intent intent=new Intent();
                 intent.putParcelableArrayListExtra("pair", (ArrayList<? extends Parcelable>) nodePairList);
-                setResult(0, intent);
+                intent.putExtra("nodeNumber",nodenumber);
+                setResult(RESULT_OK, intent);
                 finish();
                 break;
             case R.id.goon_btn:
@@ -94,13 +103,15 @@ public class InputGraphActivity extends Activity {
         etbegin.requestFocus();
         mNumber++;
     }
+
     @Override
     public void onBackPressed() {
         isConfirm=true;
         addEdges();
         Intent intent=new Intent();
         intent.putParcelableArrayListExtra("pair", (ArrayList<? extends Parcelable>) nodePairList);
-        setResult(0, intent);
+        intent.putExtra("nodeNumber",nodenumber);
+        setResult(RESULT_OK, intent);
         super.onBackPressed();
     }
 }

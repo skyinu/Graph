@@ -43,4 +43,12 @@ public class EdgeInfo implements Parcelable{
         dest.writeInt(mStart);
         dest.writeInt(mEnd);
     }
+
+    @Override
+    public String toString() {
+        return "EdgeInfo{" +
+                "mStart=" + mStart +
+                ", mEnd=" + mEnd +
+                '}';
+    }
 }

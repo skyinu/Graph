@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:graph="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     tools:context=".MainActivity">
 
@@ -15,7 +16,13 @@
         <com.graph.chen.graph.view.GraphSurfaceView
             android:id="@+id/surface_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+
+            graph:normal_node_color="#f50505"
+            graph:visited_node_color="#06ed1d"
+            graph:deleted_node_color="#e606e6"
+            graph:normal_edge_color="#06efef"
+            graph:visited_edge_color="#f5e104"/>
     </FrameLayout>
     <RelativeLayout
         android:layout_width="match_parent"

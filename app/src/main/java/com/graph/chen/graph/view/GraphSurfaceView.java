@@ -3,27 +3,32 @@ package com.graph.chen.graph.view;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
-import android.graphics.Point;
 import android.util.AttributeSet;
-import android.view.MotionEvent;
+import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import com.graph.chen.graph.R;
 import com.graph.chen.graph.action.DrawImple;
+import com.graph.chen.graph.data.EdgeInfo;
+import com.graph.chen.graph.data.Graph;
+
+import java.util.List;
 
 /**
  * Created by chen on 2016/7/12.
  */
 public class GraphSurfaceView extends SurfaceView implements SurfaceHolder.Callback{
-    private static int mVisitNodeColor;
-    private static int mNormalNodeColor;
-    private static int mVisitEdgeColor;
-    private static int mNormalEdgeColor;
-    private static int mDeletedNodeColor;
+    public static int mVisitNodeColor;
+    public static int mNormalNodeColor;
+    public static int mVisitEdgeColor;
+    public static int mNormalEdgeColor;
+    public static int mDeletedNodeColor;
+    /**
+     * 完成绘制动作的类
+     */
     private DrawImple mDrawImple;
 
-    private Point mLastClick;
 
     public GraphSurfaceView(Context context) {
         this(context,null);
@@ -38,7 +43,7 @@ public class GraphSurfaceView extends SurfaceView implements SurfaceHolder.Callb
         TypedArray ta=context.obtainStyledAttributes(attrs, R.styleable.GraphSurfaceView);
         int len=ta.length();
         for(int i=0;i<len;i++){
-            int id=ta.getResourceId(i,0);
+            int id=ta.getIndex(i);
             switch (id){
                 case R.styleable.GraphSurfaceView_normal_node_color:
                     mNormalNodeColor=ta.getColor(id,Color.RED);
@@ -58,7 +63,10 @@ public class GraphSurfaceView extends SurfaceView implements SurfaceHolder.Callb
             }
         }
         ta.recycle();
+        setKeepScreenOn(true);
+        setFocusable(true);
         getHolder().addCallback(this);
+        mDrawImple=new DrawImple();
     }
 
 
@@ -79,6 +87,7 @@ public class GraphSurfaceView extends SurfaceView implements SurfaceHolder.Callb
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
+        mDrawImple.startdrawThread(this);
     }
 
     @Override
@@ -90,36 +99,49 @@ public class GraphSurfaceView extends SurfaceView implements SurfaceHolder.Callb
         mDrawImple.endDrawThread();
     }
 
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        if(event.getAction()==MotionEvent.ACTION_DOWN){
-        }
-        return super.onTouchEvent(event);
-    }
-
     /**
      * 初始化无向图
      * @param number
      */
-    public void InitGraph(int number){
-    }
-    public static int getmVisitNodeColor() {
-        return mVisitNodeColor;
+    public void InitGraph(int number, List<EdgeInfo> infos){
+        Graph graph=new Graph(infos,number);
+        graph.calculateCoordiate(getContext(),getMeasuredWidth());
+        mDrawImple.setmGraph(graph);
+        mDrawImple.setmEdgeInfo(infos);
+        mDrawImple.setmCommand(DrawImple.COMMAND_INIT);
+
+        mDrawImple.setShouldDraw(true);
+        Log.e("tag","dimension="+getMeasuredWidth()+"   "+getMeasuredHeight());
+
     }
 
-    public static int getmNormalNodeColor() {
-        return mNormalNodeColor;
+    /**
+     * 开始绘制BFS遍历的路径
+     * @param start
+     */
+    public void BfsGraph(int start){
+        mDrawImple.setmCommand(DrawImple.COMMAND_BFS);
+        mDrawImple.setmStartNode(start);
+        mDrawImple.setShouldDraw(true);
+    }
+    /**
+     * 开始绘制DFS遍历的路径
+     * @param start
+     */
+    public void DfsGraph(int start){
+        mDrawImple.setmCommand(DrawImple.COMMAND_DFS);
+        mDrawImple.setmStartNode(start);
+        mDrawImple.setShouldDraw(true);
     }
 
-    public static int getmVisitEdgeColor() {
-        return mVisitEdgeColor;
-    }
-
-    public static int getmNormalEdgeColor() {
-        return mNormalEdgeColor;
-    }
-
-    public static int getmDeletedNodeColor() {
-        return mDeletedNodeColor;
+    /**
+     * 开始绘制删除节点的过程
+     * @param delIndex
+     */
+    public void DeleteGraphNode(int delIndex){
+        mDrawImple.setmCommand(DrawImple.COMMAND_DELETE);
+        mDrawImple.setmStartNode(delIndex);
+        mDrawImple.setHasChanged(true);
+        mDrawImple.setShouldDraw(true);
     }
 }

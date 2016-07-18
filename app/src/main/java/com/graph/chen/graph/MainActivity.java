@@ -1,27 +1,39 @@
 package com.graph.chen.graph;
 
-import android.content.DialogInterface;
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.InputType;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
+import com.graph.chen.graph.action.ActionListener;
+import com.graph.chen.graph.action.ActionListenerImpl;
+import com.graph.chen.graph.data.EdgeInfo;
 import com.graph.chen.graph.view.GraphSurfaceView;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener{
+import java.util.List;
+
+public class MainActivity extends AppCompatActivity implements View.OnClickListener,ActionListener{
     private Button createbtn,bfs_btn,dfs_btn,del_btn;
     private GraphSurfaceView mGraphSurfaceView;
+    /**
+     * 记录节点总数
+     */
     private int mNodeNumber;
+    /**
+     * 事件处理
+     */
+    private ActionListenerImpl mActionListener;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         InitView();
+        mActionListener =new ActionListenerImpl();
     }
     private void InitView() {
         createbtn= (Button) findViewById(R.id.create_btn);
@@ -34,61 +46,62 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mGraphSurfaceView= (GraphSurfaceView) findViewById(R.id.surface_view);
         del_btn.setOnClickListener(this);
     }
-    private void setDialogListener(AlertDialog.Builder dialog){
-        dialog.setTitle("请输入要生成无向图的节点个数（2～10）").setIcon(android.R.drawable.ic_dialog_info);
-        final EditText editText=new EditText(this);
-        editText.setInputType(InputType.TYPE_CLASS_NUMBER);
-        dialog.setView(editText);
-        dialog.setPositiveButton("确定", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                String str=editText.getText().toString();
-                if(str.equals("")||Integer.valueOf(str)>10||Integer.valueOf(str)<2){
-                    Toast.makeText(MainActivity.this,"节点数目范围为2～10", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-            }
-        });
-        dialog.setNegativeButton("取消",null);
-        dialog.show();
-    }
-    private void readyForVisit(AlertDialog.Builder dialog) {
-        dialog.setTitle("请输入搜索起点（0～"+mNodeNumber+"）").setIcon(android.R.drawable.ic_dialog_info);
-        final EditText editText=new EditText(this);
-        editText.setInputType(InputType.TYPE_CLASS_NUMBER);
-        dialog.setView(editText);
-        dialog.setPositiveButton("确定", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                String str = editText.getText().toString();
-                if (str.equals("") || Integer.valueOf(str) > mNodeNumber || Integer.valueOf(str) < 0) {
-                    Toast.makeText(MainActivity.this, "范围为0～" + mNodeNumber, Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                int start = Integer.valueOf(str);
-            }
-        });
-        dialog.setNegativeButton("取消", null);
-        dialog.show();
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==0&&resultCode==RESULT_OK){
+            List<EdgeInfo> datas=data.getParcelableArrayListExtra("pair");
+            mNodeNumber=data.getIntExtra("nodeNumber",2);
+            mGraphSurfaceView.InitGraph(mNodeNumber,datas);
+            Log.e("tag","number="+mNodeNumber);
+            Log.e("tag","pair="+datas.toString());
+        }
     }
 
     @Override
     public void onClick(View v) {
+        String title;
+        AlertDialog.Builder dialog;
         switch (v.getId()){
             case R.id.create_btn:
-                AlertDialog.Builder dialog=new AlertDialog.Builder(this);
-                setDialogListener(dialog);
+                dialog=new AlertDialog.Builder(this);
+                title="请输入要生成无向图的节点个数（2～10）";
+                readForInputGraph(MainActivity.this,dialog,title);
                 break;
             case R.id.dfs_btn:
-                AlertDialog.Builder dialog1=new AlertDialog.Builder(this);
+                dialog=new AlertDialog.Builder(this);
+                readForDfsVisit(mGraphSurfaceView,MainActivity.this,dialog,mNodeNumber);
                 break;
             case R.id.bfs_btn:
-                AlertDialog.Builder dialog2=new AlertDialog.Builder(this);
+                dialog=new AlertDialog.Builder(this);
+                readForBfsVisit(mGraphSurfaceView,MainActivity.this,dialog,mNodeNumber);
+
                 break;
             case R.id.del_btn:
-                AlertDialog.Builder dialog3=new AlertDialog.Builder(this);
+                dialog=new AlertDialog.Builder(this);
+                readForDelete(mGraphSurfaceView,MainActivity.this,dialog,mNodeNumber);
                 break;
         }
+    }
+
+    @Override
+    public void readForInputGraph(Context context, AlertDialog.Builder dialog, String title) {
+        mActionListener.readForInputGraph(context,dialog,title);
+    }
+
+    @Override
+    public void readForBfsVisit(GraphSurfaceView surfaceView, Context context, AlertDialog.Builder dialog, int number) {
+        mActionListener.readForBfsVisit(surfaceView,context,dialog,number);
+
+    }
+
+    @Override
+    public void readForDfsVisit(GraphSurfaceView surfaceView,Context context, AlertDialog.Builder dialog, int number) {
+        mActionListener.readForDfsVisit(surfaceView,context,dialog,number);
+    }
+
+    @Override
+    public void readForDelete(GraphSurfaceView surfaceView,Context context, AlertDialog.Builder dialog, int number) {
+        mActionListener.readForDelete(surfaceView,context,dialog,number);
     }
 }
