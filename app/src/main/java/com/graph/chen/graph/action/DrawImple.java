@@ -150,7 +150,6 @@ public class DrawImple extends Handler implements Runnable {
             if (mCommand == COMMAND_INIT) {
                 drawInitGraphEdges(holder, mCurrentCanvas, false);
             } else {
-                //  drawInitGraphEdges(holder, mCurrentCanvas, true);
                 if (mCommand == COMMAND_DELETE) {
                     drawDeletedEdgesAndNode(holder, mStartNode);
                 } else if (mCommand == COMMAND_BFS) {
@@ -189,6 +188,11 @@ public class DrawImple extends Handler implements Runnable {
             Canvas canvas = holder.lockCanvas();
             canvas.drawBitmap(mCurrentBitmap, 0, 0, null);
             holder.unlockCanvasAndPost(canvas);
+            try {
+                Thread.sleep(20);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             sn.state = GNode.NORMAL_STATE;
 
             en.state = GNode.VISITED_STATE;
