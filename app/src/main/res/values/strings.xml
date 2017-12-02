@@ -9,4 +9,7 @@
     <string name="back">取消</string>
     <string name="confirm">确定并结束</string>
     <string name="persis">添加下一个</string>
+    <string name="node_index_range">范围为%d～%d</string>
+    <string name="graph_init_hint">请先初始化无向图</string>
+    <string name="node_index_empty">请输入节点下标</string>
 </resources>

@@ -4,12 +4,14 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.text.InputType;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.graph.chen.graph.InputGraphActivity;
+import com.graph.chen.graph.R;
 import com.graph.chen.graph.view.GraphSurfaceView;
 
 /**
@@ -23,8 +25,7 @@ public class ActionListenerImpl implements ActionListener {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 String str=editText.getText().toString();
-                if(str.equals("")||Integer.valueOf(str)>10||Integer.valueOf(str)<2){
-                    Toast.makeText(context,"节点数目范围为2～10", Toast.LENGTH_SHORT).show();
+                if(!nodeIndexCheck(context, str, 2, 10)){
                     return;
                 }
                 int nodeNumber=Integer.valueOf(str.trim());
@@ -45,9 +46,8 @@ public class ActionListenerImpl implements ActionListener {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 String str = editText.getText().toString();
-                if (str.equals("") || number<=0
-                        ||Integer.valueOf(str) > number || Integer.valueOf(str) < 0) {
-                    Toast.makeText(context, "范围为0～" + number, Toast.LENGTH_SHORT).show();
+                if(!nodeIndexCheck(context, str, 0, number - 1)){
+                    return;
                 }
                 int start=Integer.valueOf(str);
                 surfaceView.BfsGraph(start);
@@ -65,9 +65,8 @@ public class ActionListenerImpl implements ActionListener {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 String str = editText.getText().toString();
-                if ("".equals(str) || number<=0
-                        ||Integer.valueOf(str) > number || Integer.valueOf(str) < 0) {
-                    Toast.makeText(context, "范围为0～" + number, Toast.LENGTH_SHORT).show();
+                if(!nodeIndexCheck(context, str, 0, number - 1)){
+                    return;
                 }
                 int start=Integer.valueOf(str);
                 surfaceView.DfsGraph(start);
@@ -85,15 +84,32 @@ public class ActionListenerImpl implements ActionListener {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 String str = editText.getText().toString();
-                if ("".equals(str)  || number<=0
-                        ||Integer.valueOf(str) > number || Integer.valueOf(str) < 0) {
-                    Toast.makeText(context, "范围为0～" + number, Toast.LENGTH_SHORT).show();
+                if(!nodeIndexCheck(context, str, 0, number - 1)){
+                    return;
                 }
                 int start=Integer.valueOf(str);
                 surfaceView.DeleteGraphNode(start);
             }
         });
         dialog.show();
+    }
+
+    private boolean nodeIndexCheck(Context context, String index, int minus, int totalIndex){
+        if(totalIndex < 2){
+            Toast.makeText(context, R.string.graph_init_hint, Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if(index == null || "".equals(index.trim())){
+            Toast.makeText(context, R.string.node_index_empty, Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        int indexNumber = Integer.valueOf(index);
+        if(indexNumber >= minus && indexNumber <= totalIndex){
+            return true;
+        }
+        String hint = context.getString(R.string.node_index_range, minus, totalIndex);
+        Toast.makeText(context, hint, Toast.LENGTH_SHORT).show();
+        return false;
     }
     /**
      * 设置dialog的对话框:标题、布局

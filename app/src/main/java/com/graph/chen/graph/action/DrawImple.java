@@ -30,11 +30,11 @@ public class DrawImple extends Handler implements Runnable {
     /**
      * 随着SurfaceView生命周期而变动
      */
-    private boolean isSurfaceAlive;
+    private volatile boolean isSurfaceAlive;
     /**
      * 标志是否需要绘图
      */
-    private boolean isShouldDraw;
+    private volatile boolean isShouldDraw;
     private boolean hasChanged;
     /**
      * 无向图
